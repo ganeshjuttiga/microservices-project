@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh "docker build -t ganeshjuttiga/service:v1 ."
+                sh 'docker build -t ganeshjuttiga/service:v1 -f src/Dockerfile .'
             }
         }
         stage('push'){
