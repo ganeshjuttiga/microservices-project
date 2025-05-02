@@ -196,34 +196,56 @@ spec:
         app: frontend
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
-spec:
-  containers:
-    - name: server
-      resources:
-        requests:
-          cpu: 200m  # Increased from 100m
-          memory: 256Mi  # Increased from 64Mi
-        limits:
-          cpu: 500m  # Increased from 200m
-          memory: 512Mi  # Increased from 128Mi
-      readinessProbe:
-        initialDelaySeconds: 30  # Increased from 10
-        periodSeconds: 15  # Added
-        failureThreshold: 3  # Added
-        httpGet:
-          path: "/_healthz"
-          port: 8080
-          httpHeaders:
+    spec:
+      containers:
+      - name: server
+        image: ganeshjuttiga/service:v1  # Make sure to add your image here
+        env:
+        - name: PORT
+          value: "8080"
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "productcatalogservice:3550"
+        - name: CURRENCY_SERVICE_ADDR
+          value: "currencyservice:7000"
+        - name: CART_SERVICE_ADDR
+          value: "cartservice:7070"
+        - name: RECOMMENDATION_SERVICE_ADDR
+          value: "recommendationservice:8080"
+        - name: SHIPPING_SERVICE_ADDR
+          value: "shippingservice:50051"
+        - name: CHECKOUT_SERVICE_ADDR
+          value: "checkoutservice:5050"
+        - name: AD_SERVICE_ADDR
+          value: "adservice:9555"
+        - name: ENABLE_PROFILER
+          value: "0"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          failureThreshold: 3
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
             - name: "Cookie"
               value: "shop_session-id=x-readiness-probe"
-      livenessProbe:
-        initialDelaySeconds: 45  # Increased from 10
-        periodSeconds: 20  # Added
-        failureThreshold: 3  # Added
-        httpGet:
-          path: "/_healthz"
-          port: 8080
-          httpHeaders:
+        livenessProbe:
+          initialDelaySeconds: 45
+          periodSeconds: 20
+          failureThreshold: 3
+          httpGet:
+            path: "/_healthz"
+            port: 8080
+            httpHeaders:
             - name: "Cookie"
               value: "shop_session-id=x-liveness-probe"
           env:
