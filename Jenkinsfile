@@ -7,7 +7,6 @@ pipeline {
                     sh 'docker build -t ganeshjuttiga/service:v1 .'
                 }
             }
-        }
         stage('push'){
             steps {
                 script {
