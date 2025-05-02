@@ -5,8 +5,8 @@ pipeline {
         stage('build') {
             dir('src') {  // Enter src folder
                     sh 'docker build -t ganeshjuttiga/service:v1 .'
-                }
             }
+        }
         stage('push'){
             steps {
                 script {
